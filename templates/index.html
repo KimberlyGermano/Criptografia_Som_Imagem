@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Criptografia de Áudio</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #101728, #1f2a44);
+            color: #222;
+        }
+
+        header {
+            padding: 50px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: auto;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: -20px auto 40px;
+            background: #f8f9fc;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        .intro {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            border-left: 6px solid #5865f2;
+        }
+
+        .intro h2 {
+            margin-top: 0;
+            color: #1f2a44;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #f1f3ff;
+            padding: 18px;
+            border-radius: 16px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #354ccc;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #e4e7f5;
+            color: #1f2a44;
+            transition: 0.3s;
+        }
+
+        .tab-button.active {
+            background: #5865f2;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        form {
+            margin-top: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            margin-top: 8px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: #5865f2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: #354ccc;
+            transform: translateY(-2px);
+        }
+
+        .note {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff8dc;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Criptografia de Áudio e Imagem</h1>
+    <p>
+        Sistema web desenvolvido em Python para codificar, distorcer,
+        enviar e recuperar arquivos de áudio e imagem.
+    </p>
+</header>
+
+<div class="container">
+
+    <section class="intro">
+        <h2>Sobre o projeto</h2>
+        <p>
+            Este projeto tem como objetivo aplicar conceitos de oscilações,
+            ondas, processamento digital de sinais e criptografia
+            em arquivos de áudio e imagem.
+        </p>
+
+        <p>
+            O sistema permite que o usuário envie um áudio ou imagem, escolha uma senha
+            de codificação e gere um novo arquivo distorcido. Para recuperar
+            o áudio original, é necessário utilizar a mesma senha usada no
+            processo de codificação.
+        </p>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Entrada</h3>
+                <p>O usuário envia um arquivo de áudio no formato WAV ou imagem.</p>
+            </div>
+
+            <div class="card">
+                <h3>Codificação</h3>
+                <p>O arquivo é distorcido e combinado com uma chave pseudoaleatória.</p>
+            </div>
+
+            <div class="card">
+                <h3>Envio</h3>
+                <p>O arquivo codificado pode ser baixado ou enviado por e-mail.</p>
+            </div>
+
+            <div class="card">
+                <h3>Recuperação</h3>
+                <p>O arquivo codificado é restaurado usando a mesma senha da codificação.</p>
+            </div>
+
+          <div class="card">
+                <h3>Arquivos Aceitos</h3>
+                <p>Os arquivos de áudio são aceitos somente no formato .WAV, e os arquivos de imagem são aceitos nos formatos .png, .jpg, .jpeg, .bmp</p>
+            </div>
+
+             <div class="card">
+                <h3>Senha de App</h3>
+                <p>Se pretender enviar o arquivo via Gmail, use uma senha de app criada para isso, diferente da senha normal do e-mail.</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <div class="tabs">
+    <button class="tab-button active" onclick="abrirAba('audio-codificar', this)">
+        Áudio: Codificar e enviar
+    </button>
+
+    <button class="tab-button" onclick="abrirAba('audio-descodificar', this)">
+        Áudio: Descodificar
+    </button>
+
+    <button class="tab-button" onclick="abrirAba('imagem-codificar', this)">
+        Imagem: Codificar e enviar
+    </button>
+
+    <button class="tab-button" onclick="abrirAba('imagem-descodificar', this)">
+        Imagem: Descodificar
+    </button>
+</div>
+
+<section id="audio-codificar" class="tab-content active">
+    <h2>Codificar e enviar áudio</h2>
+
+    <form action="/criptografar-audio" method="POST" enctype="multipart/form-data">
+        <label>Selecione um arquivo WAV:</label>
+        <input type="file" name="audio" accept=".wav" required>
+
+        <label>Senha para codificação:</label>
+        <input type="password" name="senha_audio" required>
+
+        <h3>Envio por e-mail opcional</h3>
+
+        <input type="email" name="email_remetente" placeholder="E-mail remetente">
+        <input type="password" name="senha_email" placeholder="Senha de app do Gmail">
+        <input type="email" name="email_destinatario" placeholder="E-mail destinatário">
+
+        <button type="submit">Codificar áudio</button>
+    </form>
+</section>
+
+<section id="audio-descodificar" class="tab-content">
+    <h2>Descodificador de áudio</h2>
+
+    <form action="/descriptografar-audio" method="POST" enctype="multipart/form-data">
+        <label>Selecione o áudio codificado:</label>
+        <input type="file" name="audio" accept=".wav" required>
+
+        <label>Senha usada na codificação:</label>
+        <input type="password" name="senha_audio" required>
+
+        <button type="submit">Descodificar áudio</button>
+    </form>
+</section>
+
+<section id="imagem-codificar" class="tab-content">
+    <h2>Codificar e enviar imagem</h2>
+
+    <form action="/criptografar-imagem" method="POST" enctype="multipart/form-data">
+        <label>Selecione uma imagem:</label>
+        <input type="file" name="imagem" accept=".png,.jpg,.jpeg,.bmp" required>
+
+        <label>Senha para codificação:</label>
+        <input type="password" name="senha_imagem" required>
+
+        <h3>Envio por e-mail opcional</h3>
+
+        <input type="email" name="email_remetente" placeholder="E-mail remetente">
+        <input type="password" name="senha_email" placeholder="Senha de app do Gmail">
+        <input type="email" name="email_destinatario" placeholder="E-mail destinatário">
+
+        <button type="submit">Codificar imagem</button>
+    </form>
+</section>
+
+<section id="imagem-descodificar" class="tab-content">
+    <h2>Descodificador de imagem</h2>
+
+    <form action="/descriptografar-imagem" method="POST" enctype="multipart/form-data">
+        <label>Selecione a imagem codificada:</label>
+        <input type="file" name="imagem" accept=".png" required>
+
+        <label>Senha usada na codificação:</label>
+        <input type="password" name="senha_imagem" required>
+
+        <button type="submit">Descodificar imagem</button>
+    </form>
+</section>
+
+</div>
+
+<footer>
+    Projeto de Oscilações e Ondas
+</footer>
+
+<script>
+    function abrirAba(idAba, botao) {
+        const conteudos = document.querySelectorAll(".tab-content");
+        const botoes = document.querySelectorAll(".tab-button");
+
+        conteudos.forEach(conteudo => {
+            conteudo.classList.remove("active");
+        });
+
+        botoes.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        document.getElementById(idAba).classList.add("active");
+        botao.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
