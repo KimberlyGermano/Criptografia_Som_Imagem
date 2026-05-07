@@ -18,6 +18,44 @@ def gerar_chave(senha, tamanho, unsigned_dtype):
     return chave
 
 
+def analisar_frequencia_audio(caminho_audio):
+    with wave.open(caminho_audio, "rb") as audio:
+        n_channels = audio.getnchannels()
+        sampwidth = audio.getsampwidth()
+        framerate = audio.getframerate()
+        n_frames = audio.getnframes()
+        frames = audio.readframes(n_frames)
+
+    if sampwidth == 1:
+        dtype = np.uint8
+    elif sampwidth == 2:
+        dtype = np.int16
+    else:
+        raise ValueError("Use WAV de 8 ou 16 bits.")
+
+    dados = np.frombuffer(frames, dtype=dtype).copy()
+
+    if n_channels > 1:
+        dados = dados.reshape(-1, n_channels)
+        dados = dados.mean(axis=1)
+
+    dados = dados - np.mean(dados)
+
+    fft = np.fft.fft(dados)
+    frequencias = np.fft.fftfreq(len(dados), d=1 / framerate)
+
+    magnitudes = np.abs(fft)
+
+    metade = len(frequencias) // 2
+    frequencias_positivas = frequencias[:metade]
+    magnitudes_positivas = magnitudes[:metade]
+
+    indice_pico = np.argmax(magnitudes_positivas)
+    frequencia_dominante = frequencias_positivas[indice_pico]
+
+    return round(float(frequencia_dominante), 2)
+
+
 def criptografar_audio(caminho_entrada, caminho_saida, senha):
     with wave.open(caminho_entrada, "rb") as audio:
         n_channels = audio.getnchannels()

@@ -1,9 +1,16 @@
 from flask import Flask, render_template, request, send_file
 import os
 from werkzeug.utils import secure_filename
-from audio_process import criptografar_audio, descriptografar_audio
+
+from audio_process import (
+    criptografar_audio,
+    descriptografar_audio,
+    analisar_frequencia_audio
+)
+
 from email_sender import enviar_email
 from image_process import criptografar_imagem, descriptografar_imagem
+
 
 app = Flask(__name__)
 
@@ -62,6 +69,25 @@ def descriptografar_audio_rota():
 
     return send_file(caminho_saida, as_attachment=True)
 
+
+@app.route("/analisar-audio", methods=["POST"])
+def analisar_audio_rota():
+    arquivo = request.files["audio"]
+
+    nome_seguro = secure_filename(arquivo.filename)
+    caminho_entrada = os.path.join(UPLOAD_FOLDER, nome_seguro)
+
+    arquivo.save(caminho_entrada)
+
+    frequencia = analisar_frequencia_audio(caminho_entrada)
+
+    return f"""
+    <h2>Análise de Frequência do Áudio</h2>
+    <p>Frequência dominante: <strong>{frequencia} Hz</strong></p>
+    <a href="/">Voltar</a>
+    """
+
+
 @app.route("/criptografar-imagem", methods=["POST"])
 def criptografar_imagem_rota():
     arquivo = request.files["imagem"]
@@ -104,5 +130,7 @@ def descriptografar_imagem_rota():
     descriptografar_imagem(caminho_entrada, caminho_saida, senha_imagem)
 
     return send_file(caminho_saida, as_attachment=True)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
